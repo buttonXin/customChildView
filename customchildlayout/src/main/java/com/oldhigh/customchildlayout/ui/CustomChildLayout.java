@@ -173,10 +173,13 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
                 v.startDrag(data, shadowBuilder, imageView, 0);
                 v.setVisibility(View.INVISIBLE);
 
-                for (int i = 0; i < mListPool.size(); i++) {
+                //这里将进行操作的对象取出来放到对尾，到删除的时候就是删除最近操作的view
+                for (int i = mListPool.size() -1 ; i >= 0; i--) {
                     if (v == mListPool.get(i).getView()){
                         L.e("image onTouch == " + i );
-                        mRealViewPosition = i ;
+                        mListPool.add( mListPool.remove(i) );
+                        mRealViewPosition = mListPool.size() - 1 ;
+                        break;
                     }
                 }
 
@@ -193,6 +196,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
         if (checkList() ) return false;
 
         mView = mListPool.get(mRealViewPosition).getView();
+
         int width = mView.getWidth();
         int height = mView.getHeight();
 
@@ -390,7 +394,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
         if (mListPool.size() <= 0  ) return;
         View remove = mListPool.remove(mRealViewPosition).getView();
         removeView(remove);
-        mRealViewPosition = 0 ;
+        mRealViewPosition = mListPool.size() -1;
     }
     /**
      * 删除整个view
