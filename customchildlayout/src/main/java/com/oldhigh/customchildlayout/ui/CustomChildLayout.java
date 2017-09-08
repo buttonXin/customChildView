@@ -389,7 +389,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     /**
      * 删除单个View
      */
-    public void deleteView(){
+    public void deleteRecentView(){
         checkDrawerLayout();
         if (mListPool.size() <= 0  ) return;
         View remove = mListPool.remove(mRealViewPosition).getView();
@@ -419,7 +419,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     }
 
     //转换sp为px
-    public  int spTopx( float spValue) {
+    private   int spTopx( float spValue) {
         float fontScale = getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }

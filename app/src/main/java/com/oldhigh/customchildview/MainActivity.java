@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 mCustomLayout.deleteHeight(mProgress);
                 break;
             case R.id.btn_delete_view :
-                mCustomLayout.deleteView();
+                mCustomLayout.deleteRecentView();
                 break;
             case R.id.btn_delete_all_view :
                 mCustomLayout.deleteAllView();
