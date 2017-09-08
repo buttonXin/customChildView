@@ -190,6 +190,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      */
     @Override
     public boolean onDrag(View v, DragEvent event) {
+        if (checkList() ) return false;
 
         mView = mListPool.get(mRealViewPosition).getView();
         int width = mView.getWidth();
@@ -230,6 +231,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
             mX = -1 ;
             mY = -1 ;
+            widthCanvas = -1 ;
             postInvalidate();
         }
         //这是一直在移动的过程， 准备划线
@@ -237,22 +239,30 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
             mX = (int) (event.getX() - width /2);
             mY = (int) (event.getY() - height / 2);
+            widthCanvas = width ;
             L.e( " mx = "+mX + "  my = "+ mY  + "       " + event.getX() + "  " + event.getY());
             postInvalidate();
         }
 
         return true;
     }
-
+    private int widthCanvas = -1 ;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        //画左上角的竖线
         canvas.drawLine(mX, 0 , mX , getWindowHeight() , mPaint);
+        //画左上角的横线
         canvas.drawLine(0 , mY , getWindowWidth() , mY , mPaint);
+        //画右上角的竖线
+        canvas.drawLine(mX + widthCanvas , 0 , mX + widthCanvas , getWindowHeight() , mPaint );
 
         mPaint.setTextSize(spTopx(15));
+        //画左上角的坐标
         canvas.drawText("( " + mX + " , " + mY +" )" , mX  , mY - dpToPx() , mPaint);
+        //画右上角的坐标
+        canvas.drawText("( " +( mX + widthCanvas) + " , " + mY +" )" , mX + widthCanvas   , mY - dpToPx() , mPaint);
 
     }
 
@@ -268,6 +278,8 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      * @param width  {@link #MATCH_PARENT} , {@link #HALF_PARENT} , other
      */
     public void addWidth(int width) {
+        if (checkList() ) return;
+
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
         if (width == MATCH_PARENT){
@@ -284,7 +296,17 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
         imageView.setLayoutParams(params);
     }
 
+    /**
+     * 检测list的集合
+     */
+    private boolean checkList() {
+        if (mListPool.size() == 0) return true ;
+        return false;
+    }
+
     public void addHeight( int heightInit ) {
+        if (checkList() ) return;
+
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
         if (heightInit == MATCH_PARENT){
@@ -307,6 +329,8 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      * @param width #{@link #MATCH_PARENT  = 1 dp } , {@link #HALF_PARENT  <= 0 : 1 dp} , other
      */
     public void deleteWidth(int width) {
+        if (checkList() ) return;
+
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
         if (width == MATCH_PARENT){
@@ -321,6 +345,8 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     }
 
     public void deleteHeight(int height) {
+        if (checkList() ) return;
+
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
         if (height == MATCH_PARENT){

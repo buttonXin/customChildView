@@ -34,23 +34,28 @@
         </LinearLayout>
 
         <RadioGroup
+            android:id="@+id/rg_"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioButton
+
                 android:id="@+id/rbtn_half"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="半屏"
+                android:textColor="#ec0b74"
                 />
+
             <RadioButton
                 android:id="@+id/rbtn_full"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="全屏"
+                android:textColor="#ec0b74"
                 />
 
         </RadioGroup>
@@ -74,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="20dp"
                 android:textSize="18sp"
+                android:textColor="#ec0b74"
                 />
 
         </LinearLayout>

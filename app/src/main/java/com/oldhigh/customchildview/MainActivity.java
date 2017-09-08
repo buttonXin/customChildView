@@ -1,13 +1,17 @@
 package com.oldhigh.customchildview;
 
 import android.graphics.PixelFormat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     RadioButton rbtn_half;
     @BindView(R.id.rbtn_full)
     RadioButton rbtn_full;
+    @BindView(R.id.rg_)
+    RadioGroup mGroup ;
 
 
     @Override
@@ -53,6 +59,38 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this , mLayout.getAddView());
 
         initView();
+
+
+        instruction();
+
+    }
+
+    private void instruction() {
+        final View textView = LayoutInflater.from(this).inflate(R.layout.instruction_text, mLayout, false);
+        mLayout.addView(textView , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
+
+        mLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                mLayout.removeView(textView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
     }
 
     private void initView() {
@@ -65,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 mTextView.setText(progress + "dp");
                 mProgress = progress;
 
-                rbtn_full.setChecked(false);
-                rbtn_half.setChecked(false);
+                mGroup.clearCheck();
+
             }
 
             @Override
@@ -106,11 +144,11 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.rbtn_half:
-                rbtn_half.setChecked(true);
+//                rbtn_half.setChecked(true);
                 mProgress = CustomChildLayout.HALF_PARENT;
                 break;
             case R.id.rbtn_full:
-                rbtn_full.setChecked(true);
+//                rbtn_full.setChecked(true);
                 mProgress = CustomChildLayout.MATCH_PARENT;
                 break;
 
