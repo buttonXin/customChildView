@@ -11,12 +11,14 @@ public class L {
     public static final boolean IS_DEBUG = true;
 
     public static void d(String text){
-        if (IS_DEBUG)
-            Log.d("CustomChildLayout--> ", text );
+        if (IS_DEBUG) {
+            Log.d("CustomChildLayout--> ", text);
+        }
     }
 
     public static void e(String text){
-        if (IS_DEBUG)
-            Log.e("CustomChildLayout--> ", text );
+        if (IS_DEBUG) {
+            Log.e("CustomChildLayout--> ", text);
+        }
     }
 }

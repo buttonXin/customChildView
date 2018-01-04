@@ -1,30 +1,36 @@
 package com.oldhigh.customchildview;
 
-import android.graphics.PixelFormat;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.oldhigh.customchildlayout.bean.CollectionViewState;
 import com.oldhigh.customchildlayout.ui.CustomChildLayout;
 import com.oldhigh.customchildlayout.ui.DrawerChildLayout;
+import com.oldhigh.customchildview.util.ScreenUtil;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.oldhigh.customchildlayout.LocalContant.HALF_PARENT;
+import static com.oldhigh.customchildlayout.LocalContant.IMAGE_VIEW;
+import static com.oldhigh.customchildlayout.LocalContant.MATCH_PARENT;
+import static com.oldhigh.customchildlayout.LocalContant.VIDEO_VIEW;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,14 +54,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setFullScreen();
+        ScreenUtil.setFullScreen(getWindow() , this);
 
         setContentView(R.layout.activity_main);
 
         mLayout = (DrawerChildLayout) findViewById(R.id.drawer_view);
         mCustomLayout = mLayout.getCustomChildLayout();
 
+        //在Drawer中添加添加 操作的布局
         mLayout.addOperationView(R.layout.operation , Gravity.START);
+
         ButterKnife.bind(this , mLayout.getAddView());
 
         initView();
@@ -65,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Drawer 的一些操作
+     */
     private void instruction() {
         final View textView = LayoutInflater.from(this).inflate(R.layout.instruction_text, mLayout, false);
         mLayout.addView(textView , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
@@ -82,7 +93,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(View drawerView) {
-
+                //如果没有试图就提示左滑
+                if (mCustomLayout.getChildCount() == 0){
+                    mLayout.addView(textView , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.MATCH_PARENT));
+                }
             }
 
             @Override
@@ -132,24 +146,23 @@ public class MainActivity extends AppCompatActivity {
             R.id.btn_delete_all_view,
             R.id.btn_save_all_view ,
             R.id.rbtn_half,
-            R.id.rbtn_full
+            R.id.rbtn_full,
+            R.id.btn_complete
     })
     public void operationMethod(View view){
         switch (view.getId()) {
             case R.id.add_image_view :
-                mCustomLayout.createView(CustomChildLayout.IMAGE_VIEW);
+                mCustomLayout.createView( IMAGE_VIEW);
                 break;
             case R.id.add_video_view :
-                mCustomLayout.createView(CustomChildLayout.VIDEO_VIEW);
+                mCustomLayout.createView( VIDEO_VIEW);
 
                 break;
             case R.id.rbtn_half:
-//                rbtn_half.setChecked(true);
-                mProgress = CustomChildLayout.HALF_PARENT;
+                mProgress =  HALF_PARENT;
                 break;
             case R.id.rbtn_full:
-//                rbtn_full.setChecked(true);
-                mProgress = CustomChildLayout.MATCH_PARENT;
+                mProgress =  MATCH_PARENT;
                 break;
 
             case R.id.btn_add_width  :
@@ -174,35 +187,25 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_save_all_view :
                 saveView();
                 break;
+                case R.id.btn_complete :
+                    Intent intent = new Intent(this, ShowActivity.class);
+                    intent.putExtra(ShowActivity.INFO , saveView());
+                    startActivity(intent);
+                break;
             default:
                 break;
         }
 
     }
 
-    private void saveView() {
+    private String saveView() {
         List<CollectionViewState> listView = mCustomLayout.getListView();
 
-        Log.e("<---> ", new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create()
-                .toJson(listView)
-        );
+        String json = new Gson().toJson(listView);
+        Log.e("<---> ", json);
 
+        return json;
 
     }
 
-
-    private void setFullScreen() {
-        //全屏显示，设置横屏
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-    }
 }

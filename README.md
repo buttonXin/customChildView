@@ -4,4 +4,5 @@
 
 
 这是最后获取的每个view的位置信息，以及声明类别的view
- ![ 界面](image/view_state.png)  
+ ![ 界面](image/view_state.png)
+ ![ 界面](image/testScreen.gif)

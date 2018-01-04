@@ -18,10 +18,13 @@ import android.widget.RelativeLayout;
 
 import com.oldhigh.customchildlayout.R;
 import com.oldhigh.customchildlayout.bean.CollectionViewState;
+import com.oldhigh.customchildlayout.bean.ViewBean;
 import com.oldhigh.customchildlayout.utils.L;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.oldhigh.customchildlayout.LocalContant.*;
 
 /**
  * Created by Administrator on 2017/9/5 0005.
@@ -32,14 +35,14 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     //布局参数
     private LayoutParams mParams;
     //数据类
-    private CollectionViewState mBean;
+    private ViewBean mBean;
 
     //初始化的宽高
     private int mWidthInit = 300 ;
     private int mHeightInit = 200 ;
 
     //view的集合
-    private List<CollectionViewState> mListPool;
+    private List<ViewBean> mListPool;
     //创建的view 以及当前操作的view
     private  View mView;
     //当前拖拽的view的位置
@@ -49,19 +52,8 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     //默认最小值的宽高
     private final int minDp = 5;
 
-    /**
-     * 直接设置view的宽高是 一半  还是 match
-     */
-    public static final int MATCH_PARENT = 1000_000_001;
-    public static final int HALF_PARENT = 1000_000_000;
 
-    /**
-     *声明 view 的 类型
-     */
-    public static final int IMAGE_VIEW = 1000_000_002 ;
-    public static final int VIDEO_VIEW = 1000_000_003 ;
-    public static final int TEXT_VIEW = 1000_000_004 ;
-    public static final int TIME_VIEW = 1000_000_005 ;
+    //x y 是准备划线的坐标
     private int mX = -1 ;
     private int mY = -1;
     private Paint mPaint;
@@ -77,7 +69,9 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
     public CustomChildLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if (!isInEditMode()) init(context, attrs);
+        if (!isInEditMode()) {
+            init(context, attrs);
+        }
     }
 
     /**
@@ -90,8 +84,6 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
         this.setOnDragListener(this);
 
         mParams = new LayoutParams(mWidthInit, mHeightInit);
-
-       // mBean = new CollectionViewState();
 
         mListPool = new ArrayList<>();
 
@@ -131,7 +123,8 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
         mParams.topMargin = 0 ;
         addView(mView, mParams);
 
-        mBean = new CollectionViewState(mView, type , getWindowWidth() , getWindowHeight());
+        mBean = new ViewBean(mView,  getWindowWidth() , getWindowHeight() ,type );
+
         mListPool.add(mBean);
 
         onOnLong(mView);
@@ -141,8 +134,9 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      * 检测DrawerLayout 是否为空， 否则就关闭侧滑布局
      */
     private void checkDrawerLayout() {
-        if (mDrawerLayout != null)
+        if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawers();
+        }
 
     }
 
@@ -178,12 +172,6 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
           }
       });
 
-        /*imageView.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });*/
     }
 
     /**
@@ -191,7 +179,9 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      */
     @Override
     public boolean onDrag(View v, DragEvent event) {
-        if (checkList() ) return false;
+        if (checkList() ) {
+            return false;
+        }
 
         mView = mListPool.get(mRealViewPosition).getView();
 
@@ -208,6 +198,7 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
             L.e("drop  parent x = " + event.getX() + " y = " + event.getY());
             L.e("view x = "+ width + " y = "+height);
+
             int x_cord = (int) event.getX() - width/2;
             int  y_cord = (int) event.getY()  - height/2;
 
@@ -216,11 +207,19 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
             L.e("screen x = "+ getWindowWidth() + " y = "+getWindowHeight());
 
 
-            if (x_cord <= 0 ) x_cord = 0;
-            if (y_cord <= 0 ) y_cord = 0;
+            if (x_cord <= 0 ) {
+                x_cord = 0;
+            }
+            if (y_cord <= 0 ) {
+                y_cord = 0;
+            }
 
-            if (x_cord >= (getWindowWidth() - width ) ) x_cord = (getWindowWidth() - width );
-            if (y_cord >= (getWindowHeight() - height )) y_cord = (getWindowHeight() - height );
+            if (x_cord >= (getWindowWidth() - width ) ) {
+                x_cord = (getWindowWidth() - width);
+            }
+            if (y_cord >= (getWindowHeight() - height )) {
+                y_cord = (getWindowHeight() - height);
+            }
 
 
             L.e("over x= " +x_cord + " y = " +y_cord);
@@ -277,10 +276,12 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
     /**
      * 增加view的宽高
-     * @param width  {@link #MATCH_PARENT} , {@link #HALF_PARENT} , other
+     * @param width   MATCH_PARENT} ,  HALF_PARENT} , other
      */
     public void addWidth(int width) {
-        if (checkList() ) return;
+        if (checkList() ) {
+            return;
+        }
 
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
@@ -302,12 +303,16 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      * 检测list的集合
      */
     private boolean checkList() {
-        if (mListPool.size() == 0) return true ;
+        if (mListPool.size() == 0) {
+            return true;
+        }
         return false;
     }
 
     public void addHeight( int heightInit ) {
-        if (checkList() ) return;
+        if (checkList() ) {
+            return;
+        }
 
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
@@ -328,10 +333,12 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
 
     /**
      * 减去MINUS view的宽高
-     * @param width #{@link #MATCH_PARENT  = 1 dp } , {@link #HALF_PARENT  <= 0 : 1 dp} , other
+     * @param width  MATCH_PARENT  = 1 dp } , HALF_PARENT  <= 0 : 1 dp} , other
      */
     public void deleteWidth(int width) {
-        if (checkList() ) return;
+        if (checkList() ) {
+            return;
+        }
 
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
@@ -347,7 +354,9 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
     }
 
     public void deleteHeight(int height) {
-        if (checkList() ) return;
+        if (checkList() ) {
+            return;
+        }
 
         View imageView = mListPool.get(mRealViewPosition).getView();
         LayoutParams params = (LayoutParams) imageView.getLayoutParams();
@@ -389,7 +398,9 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      */
     public void deleteRecentView(){
         checkDrawerLayout();
-        if (mListPool.size() <= 0  ) return;
+        if (mListPool.size() <= 0  ) {
+            return;
+        }
         View remove = mListPool.remove(mRealViewPosition).getView();
         removeView(remove);
         mRealViewPosition = mListPool.size() -1;
@@ -436,9 +447,16 @@ public class CustomChildLayout extends RelativeLayout implements View.OnDragList
      */
     public List<CollectionViewState> getListView(){
 
+        CollectionViewState state ;
+        List<CollectionViewState> stateList = new ArrayList<>();
+
         for (int i = 0; i < mListPool.size(); i++) {
-            mListPool.get(i).update();
+            state = new CollectionViewState();
+
+            mListPool.get(i).update(state);
+
+            stateList.add(state);
         }
-        return mListPool;
+        return stateList;
     }
 }

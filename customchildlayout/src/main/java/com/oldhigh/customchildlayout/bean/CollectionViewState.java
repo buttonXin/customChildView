@@ -2,8 +2,6 @@ package com.oldhigh.customchildlayout.bean;
 
 import android.view.View;
 
-import com.google.gson.annotations.Expose;
-
 import java.text.DecimalFormat;
 
 /**
@@ -11,38 +9,22 @@ import java.text.DecimalFormat;
  */
 
 public class CollectionViewState {
-    //不加@Expose 表示不进行序列化
-    private View view;
 
-    private double windowWidth ;
 
-    private double windowHeight;
-
-    @Expose private int viewType;
+    private int viewType;
 
     //下面4个参数是在屏幕的百分比
-    @Expose private String left ;
+    private String left;
 
-    @Expose private String top ;
+    private String top;
 
-    @Expose private String width ;
+    private String width;
 
-    @Expose private String height ;
+    private String height;
 
-    public CollectionViewState(View view,  int viewType , double windowWidth, double windowHeight) {
-        this.view = view;
-        this.windowWidth = windowWidth;
-        this.windowHeight = windowHeight;
-        this.viewType = viewType;
+    public CollectionViewState() {
     }
 
-    public View getView() {
-        return view;
-    }
-
-    public void setView(View view) {
-        this.view = view;
-    }
 
     public int getViewType() {
         return viewType;
@@ -52,20 +34,39 @@ public class CollectionViewState {
         this.viewType = viewType;
     }
 
-    /**
-     * 调用更新来获取 得到view 参数的百分比
-     */
-    public void update(){
-        if (view == null) return;
-        //保留到小数点3位
-        DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
-        left    =   decimalFormat.format( view.getX() / windowWidth  );
-        top     =   decimalFormat.format( view.getY() / windowHeight);
-        width   =   decimalFormat.format( view.getWidth() / windowWidth);
-        height  =   decimalFormat.format( view.getHeight() / windowHeight);
-
+    public String getLeft() {
+        return left;
     }
+
+    public void setLeft(String left) {
+        this.left = left;
+    }
+
+    public String getTop() {
+        return top;
+    }
+
+    public void setTop(String top) {
+        this.top = top;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
 
     @Override
     public String toString() {

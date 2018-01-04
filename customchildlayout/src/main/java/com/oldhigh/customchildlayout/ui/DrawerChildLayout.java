@@ -28,7 +28,9 @@ public class DrawerChildLayout extends DrawerLayout {
 
     public DrawerChildLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        if (!isInEditMode()) init(context, attrs);
+        if (!isInEditMode()) {
+            init(context, attrs);
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {

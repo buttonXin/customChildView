@@ -152,6 +152,12 @@
             android:text="获取界面所有view的状态"
             />
 
+        <Button
+            android:id="@+id/btn_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="跳到展示界面"
+            />
 
     </LinearLayout>
 
